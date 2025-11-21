@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 from src.app import app
 
@@ -47,3 +46,18 @@ def test_unregister_not_registered():
     response = client.post(f"/activities/Chess Club/unregister?email={email}")
     assert response.status_code == 400
     assert "not registered" in response.json()["detail"]
+
+# Test activity capacity validation
+def test_signup_activity_full():
+    # Math Olympiad has max_participants of 10
+    # Fill it up with students
+    for i in range(8):  # Already has 2 participants, so add 8 more to reach 10
+        email = f"student{i}@mergington.edu"
+        response = client.post(f"/activities/Math Olympiad/signup?email={email}")
+        assert response.status_code == 200
+    
+    # Try to add one more student when activity is full
+    email = "overflow@mergington.edu"
+    response = client.post(f"/activities/Math Olympiad/signup?email={email}")
+    assert response.status_code == 400
+    assert "Activity is full" in response.json()["detail"]

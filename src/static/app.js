@@ -85,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                   showToast(result.detail || "Failed to unregister participant.", "error");
                 }
-                messageDiv.classList.remove("hidden");
                 // Toast handles its own timeout
               } catch (err) {
                 showToast("Error occurred while unregistering.", "error");
@@ -126,6 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         showToast(result.message, "success");
         signupForm.reset();
+        fetchActivities();
       } else {
         showToast(result.detail || "An error occurred", "error");
       }
